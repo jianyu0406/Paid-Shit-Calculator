@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>薪水小偷計算機</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    #calculator { display: inline-block; border: 2px solid #ccc; padding: 20px; border-radius: 12px; }
+    input[type="number"] { width: 200px; height: 30px; font-size: 18px; text-align: right; margin-bottom: 10px; }
+    .btn { width: 200px; height: 45px; font-size: 18px; margin: 10px; cursor: pointer; }
+    .result { font-size: 20px; font-weight: bold; margin-top: 20px; }
+    #timer, #elapsedTime { font-size: 22px; font-weight: bold; color: green; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div id="calculator">
+    <h2>薪水小偷計算機</h2>
+    
+    <label for="hourlyRate">你的時薪（元）:</label><br>
+    <input type="number" id="hourlyRate" placeholder="時薪"><br>
+
+    <button class="btn" onclick="startTimer()">開始計算偷薪</button>
+    <button class="btn" onclick="resetTimer()">重設計時</button>
+
+    <div class="result" id="result"></div>
+    <div id="timer">目前偷薪金額：0 元</div>
+    <div id="elapsedTime">已經過時間：0 秒</div>
+  </div>
+
+  <script>
+    let hourlyRate = 0;
+    let secondsElapsed = 0;
+    let timerInterval;
+
+    // 防止重複啟動計時器
+    let timerRunning = false;
+
+    function startTimer() {
+      if (timerRunning) {
+        return; // 如果計時器已經啟動，就不再啟動
+      }
+
+      // 取得輸入的時薪
+      hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+      
+      // 檢查輸入是否合法
+      if (isNaN(hourlyRate) || hourlyRate <= 0) {
+        alert('請填寫有效的時薪！');
+        return;
+      }
+
+      // 隱藏結果顯示文字，並開始計時
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('timer').style.display = 'block';
+      document.getElementById('elapsedTime').style.display = 'block';
+
+      // 設置計時器，每1秒計算一次
+      timerInterval = setInterval(function() {
+        secondsElapsed++;
+        
+        // 計算偷薪金額
+        const stolenSalary = (hourlyRate / 3600) * secondsElapsed;
+        
+        // 顯示目前偷薪金額
+        document.getElementById('timer').innerText = `目前偷薪金額：${stolenSalary.toFixed(2)} 元`;
+
+        // 顯示已經過的時間
+        document.getElementById('elapsedTime').innerText = `已經過時間：${secondsElapsed} 秒`;
+      }, 1000);  // 每秒更新一次
+
+      // 標記計時器為正在運行
+      timerRunning = true;
+    }
+
+    // 重設計時器
+    function resetTimer() {
+      // 停止計時器
+      clearInterval(timerInterval);
+      
+      // 重置變數
+      secondsElapsed = 0;
+      timerRunning = false;
+      document.getElementById('hourlyRate').value = '';
+      
+      // 隱藏顯示
+      document.getElementById('timer').innerText = '目前偷薪金額：0 元';
+      document.getElementById('elapsedTime').innerText = '已經過時間：0 秒';
+      
+      // 顯示結果文字
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('timer').style.display = 'none';
+      document.getElementById('elapsedTime').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
